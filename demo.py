@@ -9,6 +9,7 @@ from __future__ import print_function
 
 import _init_paths
 import os
+import csv
 import sys
 import numpy as np
 import argparse
@@ -246,7 +247,9 @@ if __name__ == '__main__':
 
   print('Loaded Photo: {} images.'.format(num_images))
 
-
+  csvfile=open("test.csv","w")
+  writer = csv.writer(csvfile)
+  writer.writerow(["ImageName","CategoryId","Left","Top","Right","Bottom"])
   while (num_images >= 0):
       total_tic = time.time()
       if webcam_num == -1:
@@ -350,6 +353,9 @@ if __name__ == '__main__':
             # keep = nms(cls_dets, cfg.TEST.NMS, force_cpu=not cfg.USE_GPU_NMS)
             keep = nms(cls_boxes[order, :], cls_scores[order], cfg.TEST.NMS)
             cls_dets = cls_dets[keep.view(-1).long()]
+            dets=cls_dets.cpu().numpy()
+            for i in range(dets.shape[0]):
+              writer.writerow([imglist[num_images],pascal_classes[j],dets[i, 0],dets[i, 1],dets[i, 2],dets[i, 3]])
             if vis:
               im2show = vis_detections(im2show, pascal_classes[j], cls_dets.cpu().numpy(), 0.5)
 
