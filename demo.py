@@ -355,7 +355,8 @@ if __name__ == '__main__':
             cls_dets = cls_dets[keep.view(-1).long()]
             dets=cls_dets.cpu().numpy()
             for i in range(dets.shape[0]):
-              writer.writerow([imglist[num_images],pascal_classes[j],dets[i, 0],dets[i, 1],dets[i, 2],dets[i, 3]])
+              if(dets[i, -1]>0.5):
+                writer.writerow([imglist[num_images],pascal_classes[j],dets[i, 0],dets[i, 1],dets[i, 2],dets[i, 3]])
             if vis:
               im2show = vis_detections(im2show, pascal_classes[j], cls_dets.cpu().numpy(), 0.5)
 
