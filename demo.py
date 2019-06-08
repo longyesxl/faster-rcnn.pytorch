@@ -10,6 +10,7 @@ from __future__ import print_function
 import _init_paths
 import os
 import sys
+import csv
 import numpy as np
 import argparse
 import pprint
