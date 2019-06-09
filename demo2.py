@@ -563,7 +563,7 @@ if __name__ == '__main__':
             if vis and num_images%args.vistime==0:
               im2show = vis_detections(im2show, pascal_classes[j], cls_dets.cpu().numpy(), 0.5)
           object_nub.append(this_nub)
-        writer.writerow([imglist[num_images]] + object_nub)
+      writer.writerow([imglist[num_images]] + object_nub)
       misc_toc = time.time()
       nms_time = misc_toc - misc_tic
 
