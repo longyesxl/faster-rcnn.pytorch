@@ -100,6 +100,9 @@ def parse_args():
   parser.add_argument('--webcam_num', dest='webcam_num',
                       help='webcam ID number',
                       default=-1, type=int)
+  parser.add_argument('--vistime', dest='vistime',
+                      help='vistime',
+                      default=100, type=int)
 
   args = parser.parse_args()
   return args
@@ -554,7 +557,7 @@ if __name__ == '__main__':
             for i in range(dets.shape[0]):
               if(dets[i, -1]>0.5):
                 writer.writerow([imglist[num_images],pascal_classes[j],dets[i, 0],dets[i, 1],dets[i, 2],dets[i, 3]])
-            if vis:
+            if vis and num_images%istime==0:
               im2show = vis_detections(im2show, pascal_classes[j], cls_dets.cpu().numpy(), 0.5)
 
       misc_toc = time.time()
@@ -564,21 +567,21 @@ if __name__ == '__main__':
           sys.stdout.write('im_detect: {:d}/{:d} {:.3f}s {:.3f}s   \r' \
                            .format(num_images + 1, len(imglist), detect_time, nms_time))
           sys.stdout.flush()
-
-      if vis and webcam_num == -1:
-          # cv2.imshow('test', im2show)
-          # cv2.waitKey(0)
-          result_path = os.path.join(args.image_out_dir, imglist[num_images][:-4] + "_det.jpg")
-          cv2.imwrite(result_path, im2show)
-      else:
-          im2showRGB = cv2.cvtColor(im2show, cv2.COLOR_BGR2RGB)
-          cv2.imshow("frame", im2showRGB)
-          total_toc = time.time()
-          total_time = total_toc - total_tic
-          frame_rate = 1 / total_time
-          print('Frame rate:', frame_rate)
-          if cv2.waitKey(1) & 0xFF == ord('q'):
-              break
+      if num_images%istime==0:
+          if vis and webcam_num == -1:
+              # cv2.imshow('test', im2show)
+              # cv2.waitKey(0)
+              result_path = os.path.join(args.image_out_dir, imglist[num_images][:-4] + "_det.jpg")
+              cv2.imwrite(result_path, im2show)
+          else:
+              im2showRGB = cv2.cvtColor(im2show, cv2.COLOR_BGR2RGB)
+              cv2.imshow("frame", im2showRGB)
+              total_toc = time.time()
+              total_time = total_toc - total_tic
+              frame_rate = 1 / total_time
+              print('Frame rate:', frame_rate)
+              if cv2.waitKey(1) & 0xFF == ord('q'):
+                  break
   if webcam_num >= 0:
       cap.release()
       cv2.destroyAllWindows()
