@@ -103,6 +103,9 @@ def parse_args():
   parser.add_argument('--vistime', dest='vistime',
                       help='vistime',
                       default=100, type=int)
+  parser.add_argument('--s_l', dest='s_l',
+                      help='vistime',
+                      default=0.4, type=float)
 
   args = parser.parse_args()
   return args
@@ -557,7 +560,7 @@ if __name__ == '__main__':
             cls_dets = cls_dets[keep.view(-1).long()]
             dets=cls_dets.cpu().numpy()
             for i in range(dets.shape[0]):
-              if(dets[i, -1]>0.5):
+              if(dets[i, -1]>args.s_l):
                 this_nub+=1
                 #writer.writerow([imglist[num_images],pascal_classes[j],dets[i, 0],dets[i, 1],dets[i, 2],dets[i, 3]])
             if vis and num_images%args.vistime==0:
