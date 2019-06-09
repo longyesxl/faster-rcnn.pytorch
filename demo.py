@@ -557,7 +557,7 @@ if __name__ == '__main__':
             for i in range(dets.shape[0]):
               if(dets[i, -1]>0.5):
                 writer.writerow([imglist[num_images],pascal_classes[j],dets[i, 0],dets[i, 1],dets[i, 2],dets[i, 3]])
-            if vis and num_images%istime==0:
+            if vis and num_images%vistime==0:
               im2show = vis_detections(im2show, pascal_classes[j], cls_dets.cpu().numpy(), 0.5)
 
       misc_toc = time.time()
@@ -567,7 +567,7 @@ if __name__ == '__main__':
           sys.stdout.write('im_detect: {:d}/{:d} {:.3f}s {:.3f}s   \r' \
                            .format(num_images + 1, len(imglist), detect_time, nms_time))
           sys.stdout.flush()
-      if num_images%istime==0:
+      if num_images%vistime==0:
           if vis and webcam_num == -1:
               # cv2.imshow('test', im2show)
               # cv2.waitKey(0)
