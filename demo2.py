@@ -449,10 +449,15 @@ if __name__ == '__main__':
     num_images = len(imglist)
 
   print('Loaded Photo: {} images.'.format(num_images))
-
-  csvfile=open("test.csv","w")
-  writer = csv.writer(csvfile)
-  writer.writerow(["ImageName"] + ["Category{}".format(i+1) for i in range(200)])
+  os.mkdir("test")
+  csvlist=[]
+  writerlist=[]
+  for ij in range(0,100):
+    csvfile=open("test/"+str(ij)+".csv","w")
+    csvlist.append(csvfile)
+    writer = csv.writer(csvfile)
+    writer.writerow(["ImageName"] + ["Category{}".format(i+1) for i in range(200)])
+    writerlist.append(writer)
   while (num_images >= 0):
       total_tic = time.time()
       if webcam_num == -1:
@@ -540,8 +545,12 @@ if __name__ == '__main__':
       if vis:
           im2show = np.copy(im)
       object_nub=[]
+      for ij in range(0,100):
+          this_nub=[]
+          for j in range(0, 200):
+            this_nub.append(0)
+          object_nub.append(this_nub)
       for j in xrange(1, len(pascal_classes)):
-          this_nub=0
           inds = torch.nonzero(scores[:,j]>thresh).view(-1)
           # if there is det
           if inds.numel() > 0:
@@ -560,13 +569,14 @@ if __name__ == '__main__':
             cls_dets = cls_dets[keep.view(-1).long()]
             dets=cls_dets.cpu().numpy()
             for i in range(dets.shape[0]):
-              if(dets[i, -1]>args.s_l):
-                this_nub+=1
+              for ij in range(0,100):
+                if(dets[i, -1]>ij/100.0):
+                    object_nub[ij][j-1]+=1
                 #writer.writerow([imglist[num_images],pascal_classes[j],dets[i, 0],dets[i, 1],dets[i, 2],dets[i, 3]])
             if vis and num_images%args.vistime==0:
               im2show = vis_detections(im2show, pascal_classes[j], cls_dets.cpu().numpy(), 0.5)
-          object_nub.append(this_nub)
-      writer.writerow([imglist[num_images]] + object_nub)
+      for ij in range(0,100):
+          writerlist[ij].writerow([imglist[num_images]] + object_nub[ij])
       misc_toc = time.time()
       nms_time = misc_toc - misc_tic
 
