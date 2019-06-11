@@ -449,11 +449,11 @@ if __name__ == '__main__':
     num_images = len(imglist)
 
   print('Loaded Photo: {} images.'.format(num_images))
-  os.mkdir("test")
+  os.mkdir("csv_dir")
   csvlist=[]
   writerlist=[]
   for ij in range(0,100):
-    csvfile=open("test/"+str(ij)+".csv","w")
+    csvfile=open("csv_dir/"+str(ij)+".csv","w")
     csvlist.append(csvfile)
     writer = csv.writer(csvfile)
     writer.writerow(["ImageName"] + ["Category{}".format(i+1) for i in range(200)])
